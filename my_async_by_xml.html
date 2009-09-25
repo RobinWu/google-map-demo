@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Google Maps JavaScript API Example</title>
+    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true_or_false&amp;key=ABQIAAAA6zBVQQRcR0uEW265tldnSRTwGhujw-tH392tscBYtLqw5Y_wHxSeoqemPlzlcAPctTVf-AwD8FJYsA" type="text/javascript"></script>
+    <script type="text/javascript">
+      // http://www.codechina.org/doc/google/gmapapi
+      //<![CDATA[
+    function load() {
+      if (GBrowserIsCompatible()) {
+        var map = new GMap2(document.getElementById("map"));
+        map.addControl(new GSmallMapControl());
+        map.addControl(new GMapTypeControl());
+        map.setCenter(new GLatLng(37.4419, -122.1419), 13);
+
+        function createMarker(point, info) {
+          var marker = new GMarker(point);
+          GEvent.addListener(marker, "click", function() { marker.openInfoWindowHtml(info); });
+          return marker;
+        };
+
+        GDownloadUrl("my_async_by_xml.xml", function(data, responseCode) {
+          var xml = GXml.parse(data);
+          var markers = xml.documentElement.getElementsByTagName("marker");
+          for (var i = 0; i < markers.length; i++) {
+            var point = new GLatLng(parseFloat(markers[i].getAttribute("lat")), parseFloat(markers[i].getAttribute("lng")));
+            link_text = markers[i].getAttribute("link");
+            map.addOverlay(createMarker(point, markers[i].getAttribute("info") + '<br/><a href="http://' + link_text + '" target="_blank">' + link_text + '</a>'));
+          }
+        });
+      }
+    } 
+//]]>
+</script>
+</head>
+<body onload="load()" onunload="GUnload()">
+  <div id="map" style="width: 800px; height: 600px"></div>
+</body>
+</html>
